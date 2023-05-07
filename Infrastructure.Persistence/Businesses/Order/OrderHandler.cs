@@ -44,6 +44,11 @@ namespace Infrastructure.Persistence.Businesses.Order
             _authenticatedUserService = authenticatedUserService;
         }
 
+        public async Task ConfirmOrderByUser()
+        {
+
+        }
+
         public async Task<Response> Create(OrderCreateModel model)
         {
             try
@@ -59,6 +64,13 @@ namespace Infrastructure.Persistence.Businesses.Order
                 var entity = AutoMapperUtils.AutoMap<OrderCreateModel, Domain.Entities.Order>(model);
                 entity.Code = Helpers.GenerateAutoCode(CodePrefix, now.ToUnixTimeSeconds());
                 var products = JsonConvert.DeserializeObject<List<ProductBaseModel>>(model.ListProducts) ?? new List<ProductBaseModel>();
+                var lstIds = products.Select(x => x.Id);
+                var productSql = _dataContext.Products.Where(p => lstIds.Contains(p.Id)).ToList();
+                foreach (var item in productSql)
+                {
+                    item.Quantity -= products.Where(x => x.Id == item.Id).Select(x => x.Count).FirstOrDefault();
+                }
+                _dataContext.Products.UpdateRange(productSql);
                 entity.Id = Guid.NewGuid();
                 await _dataContext.Orders.AddAsync(entity);
 
