@@ -612,7 +612,8 @@ namespace Infrastructure.Persistence.Businesses.Product
                                 LoaiBaoHanh = c.LoaiBaoHanh,
                                 SupplierId = c.SupplierId,
                                 SupplierName = sp.Name,
-                                Description = c.Description
+                                Description = c.Description,
+                                Quantity = c.Quantity,
                             }).FirstOrDefault();
                 if (data != null)
                 {
