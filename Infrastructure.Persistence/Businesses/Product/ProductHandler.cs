@@ -359,7 +359,8 @@ namespace Infrastructure.Persistence.Businesses.Product
                                 VisitCount = c.VisitCount,
                                 LoaiBaoHanh = c.LoaiBaoHanh,
                                 SupplierId = c.SupplierId,
-                                Description = c.Description
+                                Description = c.Description,
+                                Quantity = c.Quantity,
                             });
                 //Filter
                 var listFilter = data.Where(x => x.Code != null).ToList();
