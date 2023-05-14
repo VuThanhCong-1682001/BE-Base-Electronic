@@ -211,6 +211,15 @@ namespace Infrastructure.Persistence.Businesses.Order
                     {
                         case -1:
                             orderModel.CanceledDate = DateTime.Now;
+                            var products = JsonConvert.DeserializeObject<List<ProductBaseModel>>(model.ListProducts);
+                            List<Domain.Entities.Product> productUpdatings = new List<Domain.Entities.Product>();
+                            foreach (var item in products)
+                            {
+                                var productSql = await _dataContext.Products.FirstOrDefaultAsync(p => p.Id == item.Id);
+                                productSql.Quantity += item.Count;
+                                productUpdatings.Add(productSql);
+                            }
+                            _dataContext.Products.UpdateRange(productUpdatings);
                             break;
                         case 1:
                             orderModel.ConfirmedDate = DateTime.Now;
